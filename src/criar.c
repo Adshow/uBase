@@ -4,11 +4,14 @@
 #include "bibliotecaCriar.h"
 #include "help.h"
 
+#define tamNomeArquivo 100
+
 void criar(int argc, char* argv[])
 {
     Parametro *p;
     FILE *stream1, *ListaArq;
     int i;
+    char *caminho;
 
     if(argc != 3 || argc != 5)
         help(2);
@@ -18,14 +21,22 @@ void criar(int argc, char* argv[])
 
         p = alocaParametro(p);
         //aloca uma string pro nome do arquivo
-        p->nomeDoArquivo = alocaString(100, p->nomeDoArquivo);
-        // chama a função que separa o argumento
-        p->nomeDoArquivo = pegaNomeArq(argv, p->nomeDoArquivo);
+        p->nomeDoArquivo = alocaString(tamNomeArquivo, p->nomeDoArquivo);
+        // obtendo o nome do arquivo
+        if(argc < tamNomeArquivo){
+            strcat(p->nomeDoArquivo,argv[2]);
+        }
+        // chama a função que obtém o caminho do arquivo
+        caminho = getCaminhoTabela(p->nomeDoArquivo);
 
         //cria arquivo como o nome dado na instrução
-        stream1 = fopen(p->nomeDoArquivo, "ab");
+        stream1 = fopen(caminho, "ab");
         //abre a lista de arquivos
-        ListaArq = fopen("ListaArquivo.ori", "ab");
+        ListaArq = fopen("dados/ListaArquivo.ori", "ab");
+        if(ListaArq == NULL){
+            exit(-1);
+            printf("Erro ao abrir arquivo!\n");
+        }
 
         // escreve o campo
         /*i = fwrite(p->nomeDoArquivo, sizeof(char), sizeof(p->nomeDoArquivo), stream1);
@@ -34,16 +45,16 @@ void criar(int argc, char* argv[])
         */
 
         //salva o campo no arquivo auxiliar para busca
-        i = fwrite(p->nomeDoArquivo, sizeof(char), sizeof(p->nomeDoArquivo), ListaArq);
-        if(i != 1)
-            printf("Erro na escrita do arquivo aux!");
+        i = fwrite(p->nomeDoArquivo, sizeof(char), tamNomeArquivo, ListaArq);
+        if(i < tamNomeArquivo)
+            printf("Erro na escrita do arquivo aux!\n");
 
         p->id_geral += 1;
 
         //salva no arquivo auxliar o id para busca
         i = fwrite(&p->id_geral, sizeof(int), 1, ListaArq);
         if(i != 1)
-            printf("Erro na escrita do id_geral!");
+            printf("Erro na escrita do id_geral!\n");
 
         fclose(stream1);
         fclose(ListaArq);

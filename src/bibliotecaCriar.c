@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 #include "bibliotecaCriar.h"
 
 char* alocaString(int tam, char* ptrC)

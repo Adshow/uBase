@@ -1,3 +1,5 @@
+#include "bibliotecaStrings.h"
+
 typedef struct
 {
     int id_campo;
