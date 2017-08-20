@@ -28,7 +28,6 @@ set(sources
 	inserir.c
 
 	indexsecundaria.c
-
 )
 
 add_executable(${target} ${sources})
